@@ -1,11 +1,14 @@
 package com.esprit.jobs.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,4 +62,17 @@ public class JobController {
 		return ResponseEntity.ok(updateEtatJob);
 	}
 	//à ne pas oublier (Taskill pour le proccessus qui utilise le port 8080)
+	
+	//supprimer job
+	@DeleteMapping("/jobs/{id}")
+	public Map<String, Boolean> deleteEmployee(@PathVariable(value = "id") int id)
+			throws ResourceNotFoundException {
+		Job job = jobrepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found for this id :: " + id));
+
+		jobrepository.delete(job);
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("deleted", Boolean.TRUE);
+		return response;
+	}
 }
